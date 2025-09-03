@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wenitto B2B Demo – Seri Zorunlu</title>
+  <style>
+    :root{
+      --bg:#0d1117; --panel:#161b22; --muted:#8b949e; --text:#e6edf3; --brand:#0dbd6d; --brand-2:#42d3ff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    header{position:sticky;top:0;z-index:10;background:rgba(13,17,23,.85);backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid #232a33}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px 16px}
+    .flex{display:flex;align-items:center;gap:12px}
+    .grow{flex:1}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:.4px}
+    .logo .mark{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;color:#0b0f14;font-weight:900}
+    .tag{font-size:12px;color:var(--muted);background:#0b0f14;border:1px solid #232a33;padding:4px 8px;border-radius:999px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+    .card{background:var(--panel);border:1px solid #242b34;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    .thumb{aspect-ratio:3/4;background:#0b0f14;display:grid;place-items:center}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .pad{padding:12px}
+    .title{font-weight:700}
+    .muted{color:var(--muted)}
+    .badge{font-size:12px;padding:2px 6px;border-radius:6px;background:#0b0f14;border:1px solid #232a33}
+    .btn{appearance:none;border:0;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer;transition:.2s}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#0b0f14}
+    .btn.ghost{background:#0b0f14;color:var(--text);border:1px solid #232a33}
+    .btn.block{width:100%}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+    .drawer{position:fixed;right:16px;bottom:16px;width:min(440px,92vw);background:var(--panel);border:1px solid #242b34;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.45);overflow:hidden}
+    .drawer header{position:unset;background:unset;border:0}
+    .line{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px dashed #2b3340;padding:10px 12px}
+    dialog{border:1px solid #242b34;border-radius:16px;padding:0;background:var(--panel);color:var(--text);max-width:min(880px,92vw)}
+    dialog::backdrop{background:rgba(0,0,0,.6)}
+    .modal-body{display:grid;grid-template-columns:1.1fr 1fr}
+    .modal-body img{width:100%;height:100%;object-fit:cover}
+    .kv{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:14px;color:var(--muted)}
+    .series{background:#0b0f14;border:1px solid #232a33;border-radius:12px;padding:10px}
+    .series-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+    .pill{padding:8px 10px;border:1px solid #2b3440;border-radius:10px;text-align:center}
+    @media (max-width:800px){ .modal-body{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap flex">
+      <div class="logo">
+        <div class="mark">W</div>
+        Wenitto <span class="tag">B2B · Seri Zorunlu</span>
+      </div>
+      <div class="grow"></div>
+      <button id="btnOpenOrder" class="btn ghost">Sipariş Özeti</button>
+      <button id="btnNewBuyer" class="btn primary">Toptancı Kaydı</button>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding:18px 16px 120px">
+    <div class="toolbar"><span class="muted">Koleksiyon: FW25 · Drop 6 · Yün karışımlı kumaş</span></div>
+    <div id="grid" class="grid" style="margin-top:12px"></div>
+  </main>
+
+  <section id="drawer" class="drawer" hidden>
+    <header class="wrap flex" style="padding:12px">
+      <div class="title">Sipariş Özeti</div>
+      <div class="grow"></div>
+      <button id="btnCloseOrder" class="btn ghost">Kapat</button>
+    </header>
+    <div id="orderLines"></div>
+    <div class="line">
+      <div class="muted">Not / İstek</div>
+      <input id="note" placeholder="Örn: Etiketli gönderim, teslimat EXW, vb." style="flex:1;background:#0b0f14;color:var(--text);border:1px solid #232a33;border-radius:10px;padding:10px"/>
+    </div>
+    <div class="line">
+      <div class="muted">Toplam Seri:</div>
+      <div id="totalSeries" style="font-weight:800">0</div>
+    </div>
+    <div class="line">
+      <div class="muted">Toplam Adet:</div>
+      <div id="totalQty" style="font-weight:800">0</div>
+    </div>
+    <div class="line" style="gap:12px">
+      <button id="btnClear" class="btn ghost">Temizle</button>
+      <button id="btnWhatsApp" class="btn primary" style="flex:1">WhatsApp Sipariş Mesajı</button>
+    </div>
+  </section>
+
+  <dialog id="modal">
+    <header class="flex" style="padding:12px 12px 0">
+      <div class="title" id="mTitle"></div>
+      <div class="grow"></div>
+      <button id="mClose" class="btn ghost">Kapat</button>
+    </header>
+    <div class="modal-body">
+      <div class="thumb" style="max-height:72vh"><img id="mImg" alt=""/></div>
+      <div class="pad" style="padding:12px">
+        <div class="kv">
+          <div>Ürün Kodu</div><div id="mSku" class="muted"></div>
+          <div>Kumaş</div><div class="muted" id="mFabric"></div>
+          <div>Renk</div><div class="muted" id="mColor"></div>
+          <div>Drop</div><div class="muted" id="mDrop"></div>
+        </div>
+        <div class="series" style="margin-top:12px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <strong>Seri sayısı (tam set):</strong>
+            <input id="seriesCount" type="number" value="1" min="1" step="1"
+                   style="width:80px;background:#0b0f14;color:var(--text);border:1px solid #232a33;border-radius:10px;padding:8px" />
+            <span class="muted">Seri seti: <span id="seriesSetText"></span></span>
+          </div>
+          <div class="series-grid" id="seriesGrid"></div>
+          <small class="muted">⚠️ Bu üründe **tam seri zorunludur**. Örn. 1 seri = listedeki her bedenden 1 adet. 2 seri = her bedenden 2 adet.</small>
+        </div>
+        <div style="margin-top:12px" class="flex">
+          <button id="mAdd" class="btn primary">Seriyi Sepete Ekle</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+  // ----------- AYARLAR -----------
+  const REQUIRE_FULL_SERIES = true;                // Tam seri zorunluluğu
+  const DEFAULT_SERIES_SET = [46,48,50,52,54,56];  // Seri bedenleri
+  const WHATSAPP_NUMBER = ""; // '90XXXXXXXXXX' şeklinde yazarsan direkt o numaraya mesaj gider.
+
+  // ----------- ÜRÜNLER -----------
+  const PRODUCTS = [
+    { sku:"WN-SUIT-CLASSIC-001", name:"Classic Suit – Navy (Drop 6)", color:"Navy", drop:"6", fabric:"70% Wool, 30% Viscose", sizes:[46,48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" },
+    { sku:"WN-SUIT-MODERN-100",  name:"Modern Suit – Charcoal (Drop 6)", color:"Charcoal", drop:"6", fabric:"80% Wool, 20% Poly",    sizes:[46,48,50,52,54,56], img:"https://images.unsplash.com/photo-1514315384763-ba401779410f?q=80&w=1200&auto=format&fit=crop" },
+    { sku:"WN-COAT-WOOL-210",    name:"Wool Coat – Camel",            color:"Camel",   drop:"-", fabric:"60% Wool, 40% Viscose",    sizes:[48,50,52,54,56],   img:"https://images.unsplash.com/photo-1519741347686-c1e0d8be53ae?q=80&w=1200&auto=format&fit=crop" },
+    { sku:"WN-JACKET-TWILL-055", name:"Twill Jacket – Black",         color:"Black",   drop:"-", fabric:"Twill Cotton Blend",      sizes:[46,48,50,52,54],   img:"https://images.unsplash.com/photo-1520975954732-35dd222996f2?q=80&w=1200&auto=format&fit=crop" }
+  ];
+
+  // ----------- STATE -----------
+  const order = new Map(); // key: sku, value: { sku, name, seriesCount, seriesSet:[...], perSize:{size:qty} }
+
+  // ----------- GRID -----------
+  const grid = document.getElementById('grid');
+  function cardHTML(p){
+    return `
+      <article class="card">
+        <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy" /></div>
+        <div class="pad">
+          <div class="title">${p.name}</div>
+          <div class="muted" style="margin:6px 0">${p.sku} · ${p.color}</div>
+          <div class="flex" style="margin-top:8px">
+            <span class="badge">Drop ${p.drop}</span>
+            <span class="badge">Seri: ${p.sizes.join(' / ')}</span>
+            <div class="grow"></div>
+          </div>
+          <button class="btn block primary" style="margin-top:10px" data-sku="${p.sku}">İncele</button>
+        </div>
+      </article>`;
+  }
+  grid.innerHTML = PRODUCTS.map(cardHTML).join('');
+
+  // ----------- MODAL -----------
+  const modal = document.getElementById('modal');
+  const mTitle = document.getElementById('mTitle');
+  const mSku   = document.getElementById('mSku');
+  const mImg   = document.getElementById('mImg');
+  const mColor = document.getElementById('mColor');
+  const mDrop  = document.getElementById('mDrop');
+  const mFabric= document.getElementById('mFabric');
+  const seriesGrid = document.getElementById('seriesGrid');
+  const seriesSetText = document.getElementById('seriesSetText');
+  const seriesCountInput = document.getElementById('seriesCount');
+  const mAdd = document.getElementById('mAdd');
+  const mClose = document.getElementById('mClose');
+  let currentProduct = null;
+
+  grid.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button[data-sku]');
+    if(!btn) return;
+    const sku = btn.dataset.sku;
+    const p = PRODUCTS.find(x=>x.sku===sku);
+    openModal(p);
+  });
+
+  function openModal(p){
+    currentProduct = p;
+    mTitle.textContent = p.name;
+    mSku.textContent = p.sku;
+    mImg.src = p.img;
+    mColor.textContent = p.color;
+    mDrop.textContent = p.drop;
+    mFabric.textContent = p.fabric;
+
+    const seriesSet = REQUIRE_FULL_SERIES ? (p.sizes.length ? p.sizes : DEFAULT_SERIES_SET) : p.sizes;
+    seriesSetText.textContent = seriesSet.join(' - ');
+    seriesCountInput.value = 1;
+    renderSeriesGrid(seriesSet, 1);
+    modal.showModal();
+  }
+  mClose.addEventListener('click', ()=> modal.close());
+
+  function renderSeriesGrid(seriesSet, count){
+    seriesGrid.innerHTML = seriesSet.map(s=>`<div class="pill">EU ${s}<br><small class="muted">adet: <b>${count}</b></small></div>`).join('');
+  }
+
+  seriesCountInput.addEventListener('input', ()=>{
+    const n = Math.max(1, parseInt(seriesCountInput.value||'1',10));
+    seriesCountInput.value = n;
+    const set = currentProduct ? (REQUIRE_FULL_SERIES ? (currentProduct.sizes.length?currentProduct.sizes:DEFAULT_SERIES_SET) : currentProduct.sizes) : DEFAULT_SERIES_SET;
+    renderSeriesGrid(set, n);
+  });
+
+  mAdd.addEventListener('click', ()=>{
+    if(!currentProduct) return;
+    const count = Math.max(1, parseInt(seriesCountInput.value||'1',10));
+    const set = REQUIRE_FULL_SERIES ? (currentProduct.sizes.length?currentProduct.sizes:DEFAULT_SERIES_SET) : currentProduct.sizes;
+    const perSize = Object.fromEntries(set.map(s=>[s, count])); // her bedenden count adet
+    order.set(currentProduct.sku, {
+      sku: currentProduct.sku,
+      name: currentProduct.name,
+      color: currentProduct.color,
+      drop: currentProduct.drop,
+      seriesCount: count,
+      seriesSet: set,
+      perSize
+    });
+    renderOrder();
+    modal.close();
+    drawer.hidden = false;
+  });
+
+  // ----------- DRAWER -----------
+  const drawer = document.getElementById('drawer');
+  const btnOpenOrder = document.getElementById('btnOpenOrder');
+  const btnCloseOrder = document.getElementById('btnCloseOrder');
+  const btnClear = document.getElementById('btnClear');
+  const btnWhatsApp = document.getElementById('btnWhatsApp');
+  const orderLines = document.getElementById('orderLines');
+  const totalQtyEl = document.getElementById('totalQty');
+  const totalSeriesEl = document.getElementById('totalSeries');
+  const noteEl = document.getElementById('note');
+
+  btnOpenOrder.addEventListener('click', ()=> drawer.hidden = false);
+  btnCloseOrder.addEventListener('click', ()=> drawer.hidden = true);
+  btnClear.addEventListener('click', ()=>{ order.clear(); renderOrder(); });
+
+  function renderOrder(){
+    let html = '';
+    let totalQty = 0;
+    let totalSeries = 0;
+    for(const row of order.values()){
+      const perSizeText = Object.entries(row.perSize).map(([s,q])=>`EU ${s}: <b>${q}</b>`).join(' · ');
+      const rowQty = Object.values(row.perSize).reduce((a,b)=>a+b,0);
+      const seriesQty = row.seriesCount;
+      totalQty += rowQty;
+      totalSeries += seriesQty;
+      html += `<div class="line">
+        <div>
+          <div style="font-weight:700">${row.name}</div>
+          <div class="muted">${row.sku} · ${row.color} · Drop ${row.drop}</div>
+          <div class="muted" style="margin-top:4px">Seri (${row.seriesSet.join(' / ')}): <b>${seriesQty}</b></div>
+          <div style="margin-top:6px">${perSizeText}</div>
+        </div>
+        <button class="btn ghost" data-del="${row.sku}">Sil</button>
+      </div>`;
+    }
+    orderLines.innerHTML = html || `<div class="line"><div class="muted">Sepet boş. Ürün kartından seri seçip ekleyin.</div></div>`;
+    totalQtyEl.textContent = totalQty;
+    totalSeriesEl.textContent = totalSeries;
+  }
+
+  orderLines.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button[data-del]');
+    if(!btn) return;
+    order.delete(btn.dataset.del);
+    renderOrder();
+  });
+
+  btnWhatsApp.addEventListener('click', ()=>{
+    if(order.size===0){ alert('Sepet boş.'); return; }
+    const lines = [];
+    for(const row of order.values()){
+      const parts = Object.entries(row.perSize).map(([s,q])=>`${s}:${q}`).join(', ');
+      lines.push(`- ${row.sku} (${row.color}, Drop ${row.drop}) => SERI x${row.seriesCount} [${row.seriesSet.join('/')}]; Detay: ${parts}`);
+    }
+    const msg = `Wenitto B2B Seri Sipariş%0A%0A${lines.join('%0A')}%0A%0AToplam Seri: ${totalSeriesEl.textContent}%0AToplam Adet: ${totalQtyEl.textContent}%0ANot: ${encodeURIComponent(noteEl.value||'-')}`;
+    const base = WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}?text=` : `https://wa.me/?text=`;
+    window.open(base + msg, '_blank');
+  });
+
+  document.getElementById('btnNewBuyer').addEventListener('click', ()=>{
+    const mail = `mailto:sales@wenitto.com?subject=Wenitto%20Wholesale%20Access&body=Merhaba%20Wenitto,%0A%0ASirket%20adi:%0AVergi%20no:%0AÜlke:%0AEmail:%0ATelefon:%0A%0ATalep:%20B2B%20erişim%20ricası.`;
+    window.location.href = mail;
+  });
+  </script>
+</body>
+</html>
