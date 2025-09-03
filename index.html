@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wenitto B2B – Seri Zorunlu (Light)</title>
+  <title>Wenitto B2B – Light</title>
   <style>
     :root{
       --bg:#f7fafc;
@@ -29,11 +29,18 @@
     .pad{padding:12px}
     .title{font-weight:700}
     .muted{color:var(--muted)}
-    .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#f1f5f9;border:1px solid var(--border);color:#0f172a}
     .btn{border:0;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
     .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:white}
     .btn.ghost{background:#ffffff;color:#0f172a;border:1px solid var(--border)}
     .btn.block{width:100%}
+
+    /* SEKME (tabs) */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+    .tab{
+      background:#ffffff;border:1px solid var(--border);border-radius:999px;
+      padding:8px 14px;font-weight:700;cursor:pointer
+    }
+    .tab.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:white;border-color:transparent}
   </style>
 </head>
 <body>
@@ -51,19 +58,27 @@
 
   <!-- Main -->
   <main class="wrap" style="padding:20px 16px 120px">
+    <!-- Şimdilik tek sekme -->
+    <nav id="tabs" class="tabs">
+      <button class="tab active" data-cat="Takım Elbise">Takım Elbise</button>
+    </nav>
+
     <div id="grid" class="grid"></div>
   </main>
 
   <script>
+  // --- ÜRÜNLER (şimdilik sadece Takım Elbise kategorisi) ---
   const PRODUCTS = [
-    { sku:"WN-SUIT-CLASSIC-001", name:"Classic Suit – Navy", sizes:[46,48,50,52,54,56], img:"wenitto-logo.png" },
-    { sku:"WN-SUIT-MODERN-100", name:"Modern Suit – Charcoal", sizes:[46,48,50,52,54,56], img:"wenitto-logo.png" }
+    { cat:"Takım Elbise", sku:"WN-SUIT-CLASSIC-001", name:"Classic Suit – Navy",    sizes:[46,48,50,52,54,56], img:"wenitto-logo.png" },
+    { cat:"Takım Elbise", sku:"WN-SUIT-MODERN-100",  name:"Modern Suit – Charcoal", sizes:[46,48,50,52,54,56], img:"wenitto-logo.png" }
   ];
+
   const grid = document.getElementById('grid');
+
   function cardHTML(p){
     return `
       <article class="card">
-        <div class="thumb"><img src="${p.img}" alt="${p.name}"></div>
+        <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
         <div class="pad">
           <div class="title">${p.name}</div>
           <div class="muted">${p.sku}</div>
@@ -71,7 +86,14 @@
         </div>
       </article>`;
   }
-  grid.innerHTML = PRODUCTS.map(cardHTML).join('');
+
+  function renderGrid(category){
+    const list = PRODUCTS.filter(p => p.cat === category);
+    grid.innerHTML = list.map(cardHTML).join('');
+  }
+
+  // İlk yüklemede Takım Elbise göster
+  renderGrid("Takım Elbise");
   </script>
 </body>
 </html>
