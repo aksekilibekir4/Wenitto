@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Wenitto B2B – Seri Zorunlu</title>
+<title>Wenitto B2B – Toptan Sipariş</title>
 <style>
   :root{
     --bg:#f7fafc; --panel:#ffffff; --border:#e5e7eb; --muted:#64748b; --text:#0f172a;
@@ -39,11 +39,6 @@
   .btn.ghost{background:#fff;color:#0f172a;border:1px solid var(--border)}
   .btn.block{width:100%}
 
-  /* Swatches */
-  .swatches{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-  .sw{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 10px;font-size:12px;cursor:pointer}
-  .sw.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
-
   /* Drawer (Sipariş Özeti) */
   .drawer{position:fixed;right:16px;bottom:16px;width:min(460px,92vw);background:var(--panel);
     border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
@@ -52,7 +47,7 @@
 
   /* Modal */
   dialog{border:1px solid var(--border);border-radius:16px;padding:0;background:var(--panel);color:var(--text);
-    max-width:min(900px,96vw);box-shadow:var(--shadow)}
+    max-width:min(980px,96vw);box-shadow:var(--shadow)}
   dialog::backdrop{background:rgba(2,8,23,.35)}
   .modal-head{display:flex;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--border)}
   .modal-body{display:grid;grid-template-columns:1.1fr 1fr}
@@ -63,6 +58,11 @@
   .series-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
   .pill{padding:10px;border:1px solid var(--border);border-radius:12px;text-align:center;background:#fff;color:#0f172a}
   @media (max-width:800px){ .modal-body{grid-template-columns:1fr} }
+
+  /* Swatches (modal içinde) */
+  .swatches{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 12px}
+  .sw{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 10px;font-size:12px;cursor:pointer}
+  .sw.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
 </style>
 </head>
 <body>
@@ -98,13 +98,17 @@
     </div>
   </section>
 
-  <!-- Ürün Modal -->
+  <!-- Ürün Modal (renk çipleri burada) -->
   <dialog id="modal">
     <div class="modal-head">
       <div id="mTitle" style="font-weight:800"></div>
       <div class="grow"></div>
       <button id="mClose" class="btn ghost">Kapat</button>
     </div>
+
+    <!-- Renk swatchları -->
+    <div id="variantRow" class="swatches" hidden></div>
+
     <div class="modal-body">
       <div class="left"><img id="mImg" alt=""></div>
       <div class="right">
@@ -121,7 +125,7 @@
             <input id="seriesCount" type="number" min="1" value="1" style="width:90px;padding:8px;border:1px solid var(--border);border-radius:10px">
           </div>
           <div class="series-grid" id="seriesGrid"></div>
-          <small class="muted">⚠️ Bu üründe <b>tam seri zorunludur</b>. 1 seri = listelenen her bedenden 1 adet.</small>
+          <small class="muted">⚠️ Bu üründe <b>tam seri</b> ile sipariş verilir. 1 seri = listelenen her bedenden 1 adet.</small>
         </div>
         <div style="padding:12px">
           <button id="mAdd" class="btn primary" style="width:100%">Seriyi Sepete Ekle</button>
@@ -136,7 +140,7 @@ const WHATSAPP_NUMBER = "905418955499"; // +90 541 895 54 99 -> wa.me için 9054
 const CATEGORIES = ["Takım Elbise","Tek Ceket","Damatlık","Kaban","Ayakkabı","Gömlek","Pantolon"];
 let currentCat = CATEGORIES[0];
 
-/* =================== SUIT MODELS (tek kart + renk varyantları) =================== */
+/* =================== SUIT MODELS (tek kart; renkler modalda) =================== */
 const SUIT_MODELS = [
   {
     cat:"Takım Elbise",
@@ -155,62 +159,43 @@ const SUIT_MODELS = [
 
 /* =================== DİĞER ÜRÜNLER =================== */
 const PRODUCTS = [
-  // Tek Ceket
   { cat:"Tek Ceket", sku:"WN-JKT-TWILL-055", name:"Twill Ceket – Siyah", color:"Siyah", drop:"-", fabric:"Koton Twill", sizes:[46,48,50,52,54], img:"https://images.unsplash.com/photo-1520975954732-35dd222996f2?q=80&w=1200&auto=format&fit=crop" },
   { cat:"Tek Ceket", sku:"WN-JKT-LINEN-120", name:"Linen Ceket – Bej",   color:"Bej",   drop:"-", fabric:"%100 Keten", sizes:[46,48,50,52,54], img:"https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1200&auto=format&fit=crop" },
-  // Damatlık
   { cat:"Damatlık", sku:"WN-TUX-PEAK-010", name:"Tuxedo – Peak Lapel", color:"Siyah", drop:"-", fabric:"Yün Karışım", sizes:[46,48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" },
-  // Kaban
   { cat:"Kaban", sku:"WN-COAT-WOOL-210", name:"Wool Coat – Camel", color:"Camel", drop:"-", fabric:"%60 Yün, %40 Viskon", sizes:[48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741347686-c1e0d8be53ae?q=80&w=1200&auto=format&fit=crop" },
-  // Ayakkabı
   { cat:"Ayakkabı", sku:"WN-SHOE-DERBY-001", name:"Derby – Siyah", color:"Siyah", drop:"-", fabric:"Deri", sizes:[40,41,42,43,44,45], img:"https://images.unsplash.com/photo-1543322748-33df6d3db806?q=80&w=1200&auto=format&fit=crop" },
-  // Gömlek
   { cat:"Gömlek", sku:"WN-SHIRT-OXF-100", name:"Oxford Gömlek – Beyaz", color:"Beyaz", drop:"-", fabric:"%100 Pamuk", sizes:["S","M","L","XL","XXL"], img:"https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=1200&auto=format&fit=crop" },
-  // Pantolon
   { cat:"Pantolon", sku:"WN-PANT-CHINO-200", name:"Chino – Bej", color:"Bej", drop:"-", fabric:"Pamuk Elastan", sizes:[30,31,32,33,34,36], img:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200&auto=format&fit=crop" },
 ];
 
 /* =================== TABS =================== */
 const TABS = document.getElementById('tabs');
-function renderTabs(){
-  TABS.innerHTML = CATEGORIES.map(c => `<button class="tab ${c===currentCat?'active':''}" data-cat="${c}">${c}</button>`).join('');
-}
-TABS.addEventListener('click',(e)=>{
-  const btn = e.target.closest('.tab'); if(!btn) return;
-  currentCat = btn.dataset.cat; renderTabs(); renderGrid();
-});
+function renderTabs(){ TABS.innerHTML = CATEGORIES.map(c => `<button class="tab ${c===currentCat?'active':''}" data-cat="${c}">${c}</button>`).join(''); }
+TABS.addEventListener('click',(e)=>{ const b=e.target.closest('.tab'); if(!b) return; currentCat=b.dataset.cat; renderTabs(); renderGrid(); });
 
 /* =================== GRID =================== */
 const grid = document.getElementById('grid');
-
 function cardHTML(p){
-  return `
-    <article class="card">
-      <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
-      <div class="pad">
-        <div class="title">${p.name}</div>
-        <div class="smallmuted">${p.sku}</div>
-        <button class="btn block primary" data-sku="${p.sku}">İncele</button>
-      </div>
-    </article>`;
+  return `<article class="card">
+    <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
+    <div class="pad">
+      <div class="title">${p.name}</div>
+      <div class="smallmuted">${p.sku}</div>
+      <button class="btn block primary" data-sku="${p.sku}">İncele</button>
+    </div>
+  </article>`;
 }
-
 function modelCardHTML(m){
   const v0 = m.variants[0];
-  return `
-    <article class="card" data-model="${m.model}" data-vi="0">
-      <div class="thumb"><img src="${v0.img}" alt="${m.name} - ${v0.color}" loading="lazy"></div>
-      <div class="pad">
-        <div class="title">${m.name} – <span class="curColor">${v0.color}</span></div>
-        <div class="smallmuted curSku">${v0.sku}</div>
-        <div class="swatches">
-          ${m.variants.map((v,i)=>`<button class="sw ${i===0?'active':''}" data-model="${m.model}" data-vi="${i}">${v.color}</button>`).join('')}
-        </div>
-        <button class="btn block primary" data-model="${m.model}" data-vi="0">İncele</button>
-      </div>
-    </article>`;
+  return `<article class="card" data-model="${m.model}">
+    <div class="thumb"><img src="${v0.img}" alt="${m.name}" loading="lazy"></div>
+    <div class="pad">
+      <div class="title">${m.name}</div>
+      <div class="smallmuted">Renk seçenekleri ürün içinde</div>
+      <button class="btn block primary" data-open-model="${m.model}">İncele</button>
+    </div>
+  </article>`;
 }
-
 function renderGrid(){
   if(currentCat==="Takım Elbise"){
     grid.innerHTML = SUIT_MODELS.map(modelCardHTML).join('');
@@ -219,43 +204,6 @@ function renderGrid(){
     grid.innerHTML = list.length ? list.map(cardHTML).join('') : `<div class="muted">Bu kategoride ürün yok.</div>`;
   }
 }
-
-/* =================== SWATCH & INCELE =================== */
-grid.addEventListener('click',(e)=>{
-  const sw = e.target.closest('.sw');
-  if(sw){
-    const modelId = sw.dataset.model;
-    const vi = +sw.dataset.vi;
-    const m = SUIT_MODELS.find(x=>x.model===modelId); if(!m) return;
-    const v = m.variants[vi];
-    const card = sw.closest('[data-model]');
-    card.dataset.vi = vi;
-    card.querySelector('img').src = v.img;
-    card.querySelector('.curColor').textContent = v.color;
-    card.querySelector('.curSku').textContent = v.sku;
-    card.querySelector('button[data-model]').dataset.vi = vi;
-    card.querySelectorAll('.sw').forEach(b=>b.classList.toggle('active', b===sw));
-    return;
-  }
-
-  const btnModel = e.target.closest('button[data-model]');
-  if(btnModel){
-    const modelId = btnModel.dataset.model;
-    const vi = +btnModel.dataset.vi;
-    const m = SUIT_MODELS.find(x=>x.model===modelId); if(!m) return;
-    const v = m.variants[vi];
-    openModal({
-      sku: v.sku, name:`${m.name} – ${v.color}`, color:v.color, drop:m.drop, fabric:m.fabric, sizes:m.sizes, img:v.img
-    });
-    return;
-  }
-
-  const btnSku = e.target.closest('button[data-sku]');
-  if(btnSku){
-    const sku = btnSku.dataset.sku;
-    const p = PRODUCTS.find(x=>x.sku===sku); if(p) openModal(p);
-  }
-});
 
 /* =================== MODAL =================== */
 const modal = document.getElementById('modal');
@@ -270,9 +218,13 @@ const seriesGrid = document.getElementById('seriesGrid');
 const seriesCountInput = document.getElementById('seriesCount');
 const mAdd = document.getElementById('mAdd');
 const mClose = document.getElementById('mClose');
-let currentProduct = null;
+const variantRow = document.getElementById('variantRow');
 
-function openModal(p){
+let currentProduct = null;     // modalda aktif ürün (seçilen varyant dahil)
+let currentModel = null;       // eğer model açıldıysa burada
+let currentVariantIndex = 0;   // modelde seçili renk
+
+function setModalFromProduct(p, showVariants=false){
   currentProduct = p;
   mTitle.textContent = p.name;
   mSku.textContent = p.sku;
@@ -283,10 +235,57 @@ function openModal(p){
   seriesCountInput.value = 1;
   renderSeriesGrid(p.sizes,1);
   seriesSetText.textContent = p.sizes.join(' - ');
+
+  // varyant çipleri
+  if(showVariants && currentModel){
+    variantRow.hidden = false;
+    variantRow.innerHTML = currentModel.variants.map((v,i)=>
+      `<button class="sw ${i===currentVariantIndex?'active':''}" data-vi="${i}">${v.color}</button>`
+    ).join('');
+  } else {
+    variantRow.hidden = true;
+    variantRow.innerHTML = "";
+  }
+}
+
+function openProductModal(p){
+  currentModel = null;
+  setModalFromProduct(p, false);
+  modal.showModal();
+}
+function openModelModal(model, vi=0){
+  currentModel = model;
+  currentVariantIndex = vi;
+  const v = model.variants[vi];
+  const p = { sku:v.sku, name:`${model.name} – ${v.color}`, color:v.color, drop:model.drop, fabric:model.fabric, sizes:model.sizes, img:v.img };
+  setModalFromProduct(p, true);
   modal.showModal();
 }
 mClose.addEventListener('click',()=>modal.close());
 
+variantRow.addEventListener('click',(e)=>{
+  const sw = e.target.closest('.sw'); if(!sw || !currentModel) return;
+  currentVariantIndex = +sw.dataset.vi;
+  const v = currentModel.variants[currentVariantIndex];
+  const p = { sku:v.sku, name:`${currentModel.name} – ${v.color}`, color:v.color, drop:currentModel.drop, fabric:currentModel.fabric, sizes:currentModel.sizes, img:v.img };
+  setModalFromProduct(p, true);
+});
+
+/* grid içinde “incele” tıklamaları */
+grid.addEventListener('click',(e)=>{
+  const btnModel = e.target.closest('[data-open-model]');
+  if(btnModel){
+    const modelId = btnModel.dataset.openModel;
+    const m = SUIT_MODELS.find(x=>x.model===modelId); if(m) openModelModal(m,0);
+    return;
+  }
+  const btnSku = e.target.closest('[data-sku]');
+  if(btnSku){
+    const p = PRODUCTS.find(x=>x.sku===btnSku.dataset.sku); if(p) openProductModal(p);
+  }
+});
+
+/* Seri grid + sayaç */
 function renderSeriesGrid(seriesSet,count){
   seriesGrid.innerHTML = seriesSet.map(s=>`<div class="pill">EU ${s}<br><small class="muted">adet: <b>${count}</b></small></div>`).join('');
 }
@@ -315,11 +314,20 @@ btnClear.addEventListener('click',()=>{ CART.clear(); renderOrder(); });
 mAdd.addEventListener('click',()=>{
   if(!currentProduct) return;
   const count = Math.max(1, parseInt(seriesCountInput.value||'1',10));
-  const perSize = Object.fromEntries(currentProduct.sizes.map(s=>[s,count]));
+
+  // Aynı SKU tekrar gelirse seri adedini toplasın
+  const prev = CART.get(currentProduct.sku);
+  const newCount = (prev?.seriesCount || 0) + count;
+
   CART.set(currentProduct.sku,{
-    sku:currentProduct.sku, name:currentProduct.name, color:currentProduct.color||"-", drop:currentProduct.drop||"-",
-    seriesCount:count, sizes:currentProduct.sizes, perSize
+    sku:currentProduct.sku,
+    name:currentProduct.name,
+    color:currentProduct.color || "-",
+    drop:currentProduct.drop || "-",
+    seriesCount:newCount,
+    sizes:currentProduct.sizes
   });
+
   renderOrder();
   modal.close();
   drawer.hidden = false;
@@ -356,7 +364,7 @@ btnWhatsApp.addEventListener('click',()=>{
     const perSizeText = row.sizes.map(s=>`${s}:${row.seriesCount}`).join(', ');
     lines.push(`- ${row.sku} (${row.color}, Drop ${row.drop}) => SERI x${row.seriesCount} [${row.sizes.join('/')}] | Detay: ${perSizeText}`);
   }
-  const msg = `Wenitto B2B Seri Sipariş%0A%0A${lines.join('%0A')}%0A%0AToplam Seri: ${totalSeriesEl.textContent}%0AToplam Adet: ${totalQtyEl.textContent}`;
+  const msg = `Wenitto Toptan Sipariş%0A%0A${lines.join('%0A')}%0A%0AToplam Seri: ${totalSeriesEl.textContent}%0AToplam Adet: ${totalQtyEl.textContent}`;
   const base = `https://wa.me/${WHATSAPP_NUMBER}?text=`;
   window.open(base + msg, '_blank');
 });
@@ -364,6 +372,7 @@ btnWhatsApp.addEventListener('click',()=>{
 /* =================== INIT =================== */
 renderTabs();
 renderGrid();
+
 document.getElementById('btnNewBuyer').addEventListener('click',()=>{
   const mail = `mailto:sales@wenitto.com?subject=Wenitto%20Wholesale%20Access&body=Merhaba%20Wenitto,%0A%0ASirket%20adi:%0AVergi%20no:%0AÜlke:%0AEmail:%0ATelefon:%0A%0ATalep:%20B2B%20erişim%20ricası.`;
   window.location.href = mail;
