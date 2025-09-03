@@ -49,7 +49,7 @@
   <div class="wrap flex">
     <div class="logo">
       <img src="./wenitto-logo.png" alt="Wenitto" style="height:28px;border-radius:6px;">
-      <span>Wenitto</span> <span class="tag">B2B · Seri Zorunlu</span>
+      <span></span> <span class="tag"></span>
     </div>
 
     <div class="grow"></div>
@@ -281,7 +281,7 @@
       const parts = Object.entries(row.perSize).map(([s,q])=>`${s}:${q}`).join(', ');
       lines.push(`- ${row.sku} (${row.color}, Drop ${row.drop}) => SERI x${row.seriesCount} [${row.seriesSet.join('/')}]; Detay: ${parts}`);
     }
-    const msg = `Wenitto B2B Seri Sipariş%0A%0A${lines.join('%0A')}%0A%0AToplam Seri: ${totalSeriesEl.textContent}%0AToplam Adet: ${totalQtyEl.textContent}%0ANot: ${encodeURIComponent(noteEl.value||'-')}`;
+    const msg = `%0A%0A${lines.join('%0A')}%0A%0AToplam Seri: ${totalSeriesEl.textContent}%0AToplam Adet: ${totalQtyEl.textContent}%0ANot: ${encodeURIComponent(noteEl.value||'-')}`;
     const base = WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}?text=` : `https://wa.me/?text=`;
     window.open(base + msg, '_blank');
   });
