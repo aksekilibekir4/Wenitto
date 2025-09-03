@@ -1,63 +1,69 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wenitto Toptan Sipariş</title>
-  <style>
-    :root{
-      --bg:#f7fafc; --panel:#ffffff; --border:#e5e7eb; --muted:#64748b; --text:#0f172a;
-      --brand:#0ea5e9; --brand-2:#22d3ee; --shadow:0 10px 30px rgba(2,8,23,.06);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-    img{display:block;max-width:100%}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wenitto B2B – Seri Zorunlu</title>
+<style>
+  :root{
+    --bg:#f7fafc; --panel:#ffffff; --border:#e5e7eb; --muted:#64748b; --text:#0f172a;
+    --brand:#0ea5e9; --brand-2:#22d3ee; --shadow:0 10px 30px rgba(2,8,23,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  img{display:block;max-width:100%}
 
-    /* Header */
-    header{position:sticky;top:0;z-index:20;background:#ffffffd9;backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border)}
-    .wrap{max-width:1100px;margin:0 auto;padding:14px 16px}
-    .flex{display:flex;align-items:center;gap:14px}
-    .grow{flex:1}
-    .logo img{height:40px}
+  /* Header */
+  header{position:sticky;top:0;z-index:20;background:#ffffffd9;backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border)}
+  .wrap{max-width:1100px;margin:0 auto;padding:14px 16px}
+  .flex{display:flex;align-items:center;gap:14px}
+  .grow{flex:1}
+  .logo img{height:40px}
 
-    /* Tabs */
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
-    .tab{background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer}
-    .tab.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
+  /* Tabs */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+  .tab{background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer}
+  .tab.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
 
-    /* Cards */
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
-    .thumb{height:350px;background:#eef6ff;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .thumb img{height:100%;object-fit:cover}
-    .pad{padding:12px}
-    .title{font-weight:700}
-    .muted{color:var(--muted)}
-    .btn{border:0;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
-    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff}
-    .btn.ghost{background:#fff;color:#0f172a;border:1px solid var(--border)}
-    .btn.block{width:100%}
+  /* Cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .thumb{height:350px;background:#eef6ff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .thumb img{height:100%;object-fit:cover}
+  .pad{padding:12px}
+  .title{font-weight:700}
+  .muted{color:var(--muted)}
+  .smallmuted{color:var(--muted);font-size:12px}
+  .btn{border:0;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
+  .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff}
+  .btn.ghost{background:#fff;color:#0f172a;border:1px solid var(--border)}
+  .btn.block{width:100%}
 
-    /* Drawer (Sipariş Özeti) */
-    .drawer{position:fixed;right:16px;bottom:16px;width:min(460px,92vw);background:var(--panel);
-      border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
-    .drawer header{display:flex;gap:12px;align-items:center; padding:12px;border-bottom:1px solid var(--border)}
-    .line{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px dashed var(--border);padding:10px 12px}
+  /* Swatches */
+  .swatches{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .sw{border:1px solid var(--border);background:#fff;border-radius:999px;padding:6px 10px;font-size:12px;cursor:pointer}
+  .sw.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
 
-    /* Modal */
-    dialog{border:1px solid var(--border);border-radius:16px;padding:0;background:var(--panel);color:var(--text);
-      max-width:min(900px,96vw);box-shadow:var(--shadow)}
-    dialog::backdrop{background:rgba(2,8,23,.35)}
-    .modal-head{display:flex;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--border)}
-    .modal-body{display:grid;grid-template-columns:1.1fr 1fr}
-    .modal-body .left{max-height:72vh}
-    .modal-body img{width:100%;height:100%;object-fit:cover}
-    .kv{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:14px;color:var(--muted);padding:12px}
-    .series{margin:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#f8fafc}
-    .series-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
-    .pill{padding:10px;border:1px solid var(--border);border-radius:12px;text-align:center;background:#fff;color:#0f172a}
-    @media (max-width:800px){ .modal-body{grid-template-columns:1fr} }
-  </style>
+  /* Drawer (Sipariş Özeti) */
+  .drawer{position:fixed;right:16px;bottom:16px;width:min(460px,92vw);background:var(--panel);
+    border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .drawer header{display:flex;gap:12px;align-items:center; padding:12px;border-bottom:1px solid var(--border)}
+  .line{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px dashed var(--border);padding:10px 12px}
+
+  /* Modal */
+  dialog{border:1px solid var(--border);border-radius:16px;padding:0;background:var(--panel);color:var(--text);
+    max-width:min(900px,96vw);box-shadow:var(--shadow)}
+  dialog::backdrop{background:rgba(2,8,23,.35)}
+  .modal-head{display:flex;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--border)}
+  .modal-body{display:grid;grid-template-columns:1.1fr 1fr}
+  .modal-body .left{max-height:72vh}
+  .modal-body img{width:100%;height:100%;object-fit:cover}
+  .kv{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:14px;color:var(--muted);padding:12px}
+  .series{margin:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#f8fafc}
+  .series-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  .pill{padding:10px;border:1px solid var(--border);border-radius:12px;text-align:center;background:#fff;color:#0f172a}
+  @media (max-width:800px){ .modal-body{grid-template-columns:1fr} }
+</style>
 </head>
 <body>
   <!-- Header -->
@@ -124,18 +130,14 @@
     </div>
   </dialog>
 
-  <script>
-  // ------------------ AYARLAR ------------------
-  const WHATSAPP_NUMBER = "905418955499"; // örn "90XXXXXXXXXX"
-  const REQUIRE_FULL_SERIES = true;
+<script>
+/* =================== AYARLAR =================== */
+const WHATSAPP_NUMBER = "905418955499"; // +90 541 895 54 99 -> wa.me için 905418955499
+const CATEGORIES = ["Takım Elbise","Tek Ceket","Damatlık","Kaban","Ayakkabı","Gömlek","Pantolon"];
+let currentCat = CATEGORIES[0];
 
-  // ------------------ KATEGORİLER ------------------
-  const CATEGORIES = ["Takım Elbise","Tek Ceket","Damatlık","Kaban","Ayakkabı","Gömlek","Pantolon"];
-  let currentCat = CATEGORIES[0];
-
-  const PRODUCTS = [
-    // Takım Elbise
-   const SUIT_MODELS = [
+/* =================== SUIT MODELS (tek kart + renk varyantları) =================== */
+const SUIT_MODELS = [
   {
     cat:"Takım Elbise",
     model:"WN-SUIT-SPOR",
@@ -143,62 +145,56 @@
     drop:"6",
     fabric:"76% Viscose, 21% Poly, 3% Lycra",
     sizes:[46,48,50,52,54,56],
-    // Ana sayfada tek kart; aşağıdaki varyantlar siparişte ayrı SKU
     variants:[
       { color:"Yeşil",    sku:"WN-SUIT-CLASSIC-001", img:"./takim1.jpg" },
       { color:"Mavi",     sku:"WN-SUIT-MODERN-100",  img:"./takim2.jpg" },
-      { color:"Lacivert", sku:"WN-SUIT-GREY-200",    img:"./takim3.jpg" },
-      { color:"Siyah", sku:"WN-SUIT-GREY-200",    img:"./takim3.jpg" }
+      { color:"Lacivert", sku:"WN-SUIT-GREY-200",    img:"./takim3.jpg" }
     ]
   }
 ];
-    // Tek Ceket
-    { cat:"Tek Ceket", sku:"WN-JKT-TWILL-055", name:"Twill Ceket – Siyah", color:"Siyah", drop:"-", fabric:"Koton Twill", sizes:[46,48,50,52,54], img:"https://images.unsplash.com/photo-1520975954732-35dd222996f2?q=80&w=1200&auto=format&fit=crop" },
-    { cat:"Tek Ceket", sku:"WN-JKT-LINEN-120", name:"Linen Ceket – Bej",   color:"Bej",   drop:"-", fabric:"%100 Keten", sizes:[46,48,50,52,54], img:"https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1200&auto=format&fit=crop" },
 
-    // Damatlık
-    { cat:"Damatlık", sku:"WN-TUX-PEAK-010", name:"Tuxedo – Peak Lapel", color:"Siyah", drop:"-", fabric:"Yün Karışım", sizes:[46,48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" },
+/* =================== DİĞER ÜRÜNLER =================== */
+const PRODUCTS = [
+  // Tek Ceket
+  { cat:"Tek Ceket", sku:"WN-JKT-TWILL-055", name:"Twill Ceket – Siyah", color:"Siyah", drop:"-", fabric:"Koton Twill", sizes:[46,48,50,52,54], img:"https://images.unsplash.com/photo-1520975954732-35dd222996f2?q=80&w=1200&auto=format&fit=crop" },
+  { cat:"Tek Ceket", sku:"WN-JKT-LINEN-120", name:"Linen Ceket – Bej",   color:"Bej",   drop:"-", fabric:"%100 Keten", sizes:[46,48,50,52,54], img:"https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1200&auto=format&fit=crop" },
+  // Damatlık
+  { cat:"Damatlık", sku:"WN-TUX-PEAK-010", name:"Tuxedo – Peak Lapel", color:"Siyah", drop:"-", fabric:"Yün Karışım", sizes:[46,48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" },
+  // Kaban
+  { cat:"Kaban", sku:"WN-COAT-WOOL-210", name:"Wool Coat – Camel", color:"Camel", drop:"-", fabric:"%60 Yün, %40 Viskon", sizes:[48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741347686-c1e0d8be53ae?q=80&w=1200&auto=format&fit=crop" },
+  // Ayakkabı
+  { cat:"Ayakkabı", sku:"WN-SHOE-DERBY-001", name:"Derby – Siyah", color:"Siyah", drop:"-", fabric:"Deri", sizes:[40,41,42,43,44,45], img:"https://images.unsplash.com/photo-1543322748-33df6d3db806?q=80&w=1200&auto=format&fit=crop" },
+  // Gömlek
+  { cat:"Gömlek", sku:"WN-SHIRT-OXF-100", name:"Oxford Gömlek – Beyaz", color:"Beyaz", drop:"-", fabric:"%100 Pamuk", sizes:["S","M","L","XL","XXL"], img:"https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=1200&auto=format&fit=crop" },
+  // Pantolon
+  { cat:"Pantolon", sku:"WN-PANT-CHINO-200", name:"Chino – Bej", color:"Bej", drop:"-", fabric:"Pamuk Elastan", sizes:[30,31,32,33,34,36], img:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200&auto=format&fit=crop" },
+];
 
-    // Kaban
-    { cat:"Kaban", sku:"WN-COAT-WOOL-210", name:"Wool Coat – Camel", color:"Camel", drop:"-", fabric:"%60 Yün, %40 Viskon", sizes:[48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741347686-c1e0d8be53ae?q=80&w=1200&auto=format&fit=crop" },
+/* =================== TABS =================== */
+const TABS = document.getElementById('tabs');
+function renderTabs(){
+  TABS.innerHTML = CATEGORIES.map(c => `<button class="tab ${c===currentCat?'active':''}" data-cat="${c}">${c}</button>`).join('');
+}
+TABS.addEventListener('click',(e)=>{
+  const btn = e.target.closest('.tab'); if(!btn) return;
+  currentCat = btn.dataset.cat; renderTabs(); renderGrid();
+});
 
-    // Ayakkabı
-    { cat:"Ayakkabı", sku:"WN-SHOE-DERBY-001", name:"Derby – Siyah", color:"Siyah", drop:"-", fabric:"Deri", sizes:[40,41,42,43,44,45], img:"https://images.unsplash.com/photo-1543322748-33df6d3db806?q=80&w=1200&auto=format&fit=crop" },
+/* =================== GRID =================== */
+const grid = document.getElementById('grid');
 
-    // Gömlek
-    { cat:"Gömlek", sku:"WN-SHIRT-OXF-100", name:"Oxford Gömlek – Beyaz", color:"Beyaz", drop:"-", fabric:"%100 Pamuk", sizes:["S","M","L","XL","XXL"], img:"https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=1200&auto=format&fit=crop" },
-
-    // Pantolon
-    { cat:"Pantolon", sku:"WN-PANT-CHINO-200", name:"Chino – Bej", color:"Bej", drop:"-", fabric:"Pamuk Elastan", sizes:[30,31,32,33,34,36], img:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200&auto=format&fit=crop" },
-  ];
-
-  // ------------------ RENDER: Tabs ------------------
-  const TABS = document.getElementById('tabs');
-  function renderTabs(){
-    TABS.innerHTML = CATEGORIES.map(c => `<button class="tab ${c===currentCat?'active':''}" data-cat="${c}">${c}</button>`).join('');
-  }
-  TABS.addEventListener('click',(e)=>{
-    const btn = e.target.closest('.tab'); if(!btn) return;
-    currentCat = btn.dataset.cat;
-    renderTabs();
-    renderGrid();
-  });
-
- 
- // --- Normal ürün kartı (diğer kategoriler) ---
 function cardHTML(p){
   return `
     <article class="card">
       <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
       <div class="pad">
         <div class="title">${p.name}</div>
-        <div class="muted smallmuted">${p.sku}</div>
+        <div class="smallmuted">${p.sku}</div>
         <button class="btn block primary" data-sku="${p.sku}">İncele</button>
       </div>
     </article>`;
 }
 
-// --- Model kartı (Takım Elbise; tek kart + renk swatchları) ---
 function modelCardHTML(m){
   const v0 = m.variants[0];
   return `
@@ -206,11 +202,9 @@ function modelCardHTML(m){
       <div class="thumb"><img src="${v0.img}" alt="${m.name} - ${v0.color}" loading="lazy"></div>
       <div class="pad">
         <div class="title">${m.name} – <span class="curColor">${v0.color}</span></div>
-        <div class="muted smallmuted"><span class="curSku">${v0.sku}</span></div>
+        <div class="smallmuted curSku">${v0.sku}</div>
         <div class="swatches">
-          ${m.variants.map((v,i)=>`
-            <button class="sw ${i===0?'active':''}" data-model="${m.model}" data-vi="${i}">${v.color}</button>
-          `).join('')}
+          ${m.variants.map((v,i)=>`<button class="sw ${i===0?'active':''}" data-model="${m.model}" data-vi="${i}">${v.color}</button>`).join('')}
         </div>
         <button class="btn block primary" data-model="${m.model}" data-vi="0">İncele</button>
       </div>
@@ -218,188 +212,162 @@ function modelCardHTML(m){
 }
 
 function renderGrid(){
-  if(currentCat === "Takım Elbise"){
-    // Tek kart (veya birden fazla model varsa hepsi)
+  if(currentCat==="Takım Elbise"){
     grid.innerHTML = SUIT_MODELS.map(modelCardHTML).join('');
-  } else {
-    const list = PRODUCTS.filter(p => p.cat === currentCat);
-    grid.innerHTML = list.length ? list.map(cardHTML).join('')
-      : `<div class="muted">Bu kategoride ürün yok.</div>`;
+  }else{
+    const list = PRODUCTS.filter(p=>p.cat===currentCat);
+    grid.innerHTML = list.length ? list.map(cardHTML).join('') : `<div class="muted">Bu kategoride ürün yok.</div>`;
   }
 }
 
-  // ------------------ MODAL ------------------
-  const modal = document.getElementById('modal');
-  const mTitle = document.getElementById('mTitle');
-  const mSku   = document.getElementById('mSku');
-  const mImg   = document.getElementById('mImg');
-  const mColor = document.getElementById('mColor');
-  const mDrop  = document.getElementById('mDrop');
-  const mFabric= document.getElementById('mFabric');
-  const seriesSetText = document.getElementById('seriesSetText');
-  const seriesGrid = document.getElementById('seriesGrid');
-  const seriesCountInput = document.getElementById('seriesCount');
-  const mAdd = document.getElementById('mAdd');
-  const mClose = document.getElementById('mClose');
-  let currentProduct = null;
-
- // Renk swatch tıklama: kart içini güncelle
+/* =================== SWATCH & INCELE =================== */
 grid.addEventListener('click',(e)=>{
-  const sw = e.target.closest('.sw'); 
-  if(!sw) return;
-  const modelId = sw.dataset.model;
-  const vi = parseInt(sw.dataset.vi,10);
-  const model = SUIT_MODELS.find(x=>x.model===modelId);
-  if(!model) return;
-  const v = model.variants[vi];
+  const sw = e.target.closest('.sw');
+  if(sw){
+    const modelId = sw.dataset.model;
+    const vi = +sw.dataset.vi;
+    const m = SUIT_MODELS.find(x=>x.model===modelId); if(!m) return;
+    const v = m.variants[vi];
+    const card = sw.closest('[data-model]');
+    card.dataset.vi = vi;
+    card.querySelector('img').src = v.img;
+    card.querySelector('.curColor').textContent = v.color;
+    card.querySelector('.curSku').textContent = v.sku;
+    card.querySelector('button[data-model]').dataset.vi = vi;
+    card.querySelectorAll('.sw').forEach(b=>b.classList.toggle('active', b===sw));
+    return;
+  }
 
-  const card = sw.closest('[data-model]');
-  card.dataset.vi = vi;
-  // Görsel, renk, sku güncelle
-  card.querySelector('img').src = v.img;
-  card.querySelector('.curColor').textContent = v.color;
-  card.querySelector('.curSku').textContent = v.sku;
-  // İncele butonuna seçili indexi yaz
-  card.querySelector('button[data-model]').dataset.vi = vi;
-
-  // aktif sınıf
-  card.querySelectorAll('.sw').forEach(b=>b.classList.toggle('active', b===sw));
-});
-
-// İncele (Takım Elbise: model+varyant), diğerleri: sku
-grid.addEventListener('click',(e)=>{
-  // model varyantı
   const btnModel = e.target.closest('button[data-model]');
   if(btnModel){
     const modelId = btnModel.dataset.model;
-    const vi = parseInt(btnModel.dataset.vi,10);
-    const m = SUIT_MODELS.find(x=>x.model===modelId);
-    if(!m) return;
+    const vi = +btnModel.dataset.vi;
+    const m = SUIT_MODELS.find(x=>x.model===modelId); if(!m) return;
     const v = m.variants[vi];
-    // modalı seçilen varyantla aç
     openModal({
-      sku: v.sku,
-      name: `${m.name} – ${v.color}`,
-      color: v.color,
-      drop: m.drop,
-      fabric: m.fabric,
-      sizes: m.sizes,
-      img: v.img
+      sku: v.sku, name:`${m.name} – ${v.color}`, color:v.color, drop:m.drop, fabric:m.fabric, sizes:m.sizes, img:v.img
     });
     return;
   }
-  // normal ürün
+
   const btnSku = e.target.closest('button[data-sku]');
   if(btnSku){
     const sku = btnSku.dataset.sku;
-    const p = PRODUCTS.find(x=>x.sku===sku);
-    if(p){ openModal(p); }
+    const p = PRODUCTS.find(x=>x.sku===sku); if(p) openModal(p);
   }
 });
 
-  function openModal(p){
-    currentProduct = p;
-    mTitle.textContent = p.name;
-    mSku.textContent = p.sku;
-    mImg.src = p.img;
-    mColor.textContent = p.color || "-";
-    mDrop.textContent = p.drop || "-";
-    mFabric.textContent = p.fabric || "-";
-    seriesCountInput.value = 1;
-    renderSeriesGrid(p.sizes, 1);
-    seriesSetText.textContent = p.sizes.join(' - ');
-    modal.showModal();
+/* =================== MODAL =================== */
+const modal = document.getElementById('modal');
+const mTitle = document.getElementById('mTitle');
+const mSku   = document.getElementById('mSku');
+const mImg   = document.getElementById('mImg');
+const mColor = document.getElementById('mColor');
+const mDrop  = document.getElementById('mDrop');
+const mFabric= document.getElementById('mFabric');
+const seriesSetText = document.getElementById('seriesSetText');
+const seriesGrid = document.getElementById('seriesGrid');
+const seriesCountInput = document.getElementById('seriesCount');
+const mAdd = document.getElementById('mAdd');
+const mClose = document.getElementById('mClose');
+let currentProduct = null;
+
+function openModal(p){
+  currentProduct = p;
+  mTitle.textContent = p.name;
+  mSku.textContent = p.sku;
+  mImg.src = p.img;
+  mColor.textContent = p.color || "-";
+  mDrop.textContent = p.drop || "-";
+  mFabric.textContent = p.fabric || "-";
+  seriesCountInput.value = 1;
+  renderSeriesGrid(p.sizes,1);
+  seriesSetText.textContent = p.sizes.join(' - ');
+  modal.showModal();
+}
+mClose.addEventListener('click',()=>modal.close());
+
+function renderSeriesGrid(seriesSet,count){
+  seriesGrid.innerHTML = seriesSet.map(s=>`<div class="pill">EU ${s}<br><small class="muted">adet: <b>${count}</b></small></div>`).join('');
+}
+seriesCountInput.addEventListener('input',()=>{
+  const n = Math.max(1, parseInt(seriesCountInput.value||'1',10));
+  seriesCountInput.value = n;
+  if(currentProduct) renderSeriesGrid(currentProduct.sizes, n);
+});
+
+/* =================== CART & DRAWER =================== */
+const drawer = document.getElementById('drawer');
+const btnOpenOrder = document.getElementById('btnOpenOrder');
+const btnCloseOrder = document.getElementById('btnCloseOrder');
+const btnClear = document.getElementById('btnClear');
+const btnWhatsApp = document.getElementById('btnWhatsApp');
+const orderLines = document.getElementById('orderLines');
+const totalQtyEl = document.getElementById('totalQty');
+const totalSeriesEl = document.getElementById('totalSeries');
+
+const CART = new Map(); // key=sku
+
+btnOpenOrder.addEventListener('click',()=>drawer.hidden=false);
+btnCloseOrder.addEventListener('click',()=>drawer.hidden=true);
+btnClear.addEventListener('click',()=>{ CART.clear(); renderOrder(); });
+
+mAdd.addEventListener('click',()=>{
+  if(!currentProduct) return;
+  const count = Math.max(1, parseInt(seriesCountInput.value||'1',10));
+  const perSize = Object.fromEntries(currentProduct.sizes.map(s=>[s,count]));
+  CART.set(currentProduct.sku,{
+    sku:currentProduct.sku, name:currentProduct.name, color:currentProduct.color||"-", drop:currentProduct.drop||"-",
+    seriesCount:count, sizes:currentProduct.sizes, perSize
+  });
+  renderOrder();
+  modal.close();
+  drawer.hidden = false;
+});
+
+function renderOrder(){
+  let html=''; let totalQty=0; let totalSeries=0;
+  for(const row of CART.values()){
+    const rowQty = row.seriesCount * row.sizes.length;
+    totalQty += rowQty; totalSeries += row.seriesCount;
+    html += `<div class="line">
+      <div>
+        <div style="font-weight:700">${row.name}</div>
+        <div class="muted">${row.sku} · ${row.color} · Drop ${row.drop}</div>
+        <div class="muted" style="margin-top:4px">Seri (${row.sizes.join(' / ')}): <b>${row.seriesCount}</b></div>
+        <div class="muted">Toplam adet: <b>${rowQty}</b></div>
+      </div>
+      <button class="btn ghost" data-del="${row.sku}">Sil</button>
+    </div>`;
   }
-  mClose.addEventListener('click',()=>modal.close());
+  orderLines.innerHTML = html || `<div class="line"><div class="muted">Sepet boş. Ürün kartından seri seçip ekleyin.</div></div>`;
+  totalQtyEl.textContent = totalQty;
+  totalSeriesEl.textContent = totalSeries;
+}
+orderLines.addEventListener('click',(e)=>{
+  const btn=e.target.closest('button[data-del]'); if(!btn) return;
+  CART.delete(btn.dataset.del); renderOrder();
+});
 
-  function renderSeriesGrid(seriesSet, count){
-    seriesGrid.innerHTML = seriesSet.map(s=>`<div class="pill">EU ${s}<br><small class="muted">adet: <b>${count}</b></small></div>`).join('');
+btnWhatsApp.addEventListener('click',()=>{
+  if(CART.size===0){ alert("Sepet boş."); return; }
+  const lines=[];
+  for(const row of CART.values()){
+    const perSizeText = row.sizes.map(s=>`${s}:${row.seriesCount}`).join(', ');
+    lines.push(`- ${row.sku} (${row.color}, Drop ${row.drop}) => SERI x${row.seriesCount} [${row.sizes.join('/')}] | Detay: ${perSizeText}`);
   }
-  seriesCountInput.addEventListener('input',()=>{
-    const n = Math.max(1, parseInt(seriesCountInput.value||'1',10));
-    seriesCountInput.value = n;
-    if(currentProduct) renderSeriesGrid(currentProduct.sizes, n);
-  });
+  const msg = `Wenitto B2B Seri Sipariş%0A%0A${lines.join('%0A')}%0A%0AToplam Seri: ${totalSeriesEl.textContent}%0AToplam Adet: ${totalQtyEl.textContent}`;
+  const base = `https://wa.me/${WHATSAPP_NUMBER}?text=`;
+  window.open(base + msg, '_blank');
+});
 
-  // ------------------ CART / DRAWER ------------------
-  const drawer = document.getElementById('drawer');
-  const btnOpenOrder = document.getElementById('btnOpenOrder');
-  const btnCloseOrder = document.getElementById('btnCloseOrder');
-  const btnClear = document.getElementById('btnClear');
-  const btnWhatsApp = document.getElementById('btnWhatsApp');
-  const orderLines = document.getElementById('orderLines');
-  const totalQtyEl = document.getElementById('totalQty');
-  const totalSeriesEl = document.getElementById('totalSeries');
-
-  const CART = new Map(); // key = sku
-
-  btnOpenOrder.addEventListener('click',()=>drawer.hidden=false);
-  btnCloseOrder.addEventListener('click',()=>drawer.hidden=true);
-  btnClear.addEventListener('click',()=>{ CART.clear(); renderOrder(); });
-
-  mAdd.addEventListener('click',()=>{
-    if(!currentProduct) return;
-    const count = Math.max(1, parseInt(seriesCountInput.value||'1',10));
-    const perSize = Object.fromEntries(currentProduct.sizes.map(s=>[s,count]));
-    CART.set(currentProduct.sku, {
-      sku: currentProduct.sku, name: currentProduct.name, color: currentProduct.color||"-", drop: currentProduct.drop||"-",
-      seriesCount: count, sizes: currentProduct.sizes, perSize
-    });
-    renderOrder();
-    modal.close();
-    drawer.hidden = false;
-  });
-
-  function renderOrder(){
-    let html = '';
-    let totalQty = 0;
-    let totalSeries = 0;
-    for(const row of CART.values()){
-      const rowQty = row.seriesCount * row.sizes.length;
-      totalQty += rowQty;
-      totalSeries += row.seriesCount;
-      html += `<div class="line">
-        <div>
-          <div style="font-weight:700">${row.name}</div>
-          <div class="muted">${row.sku} · ${row.color} · Drop ${row.drop}</div>
-          <div class="muted" style="margin-top:4px">Seri (${row.sizes.join(' / ')}): <b>${row.seriesCount}</b></div>
-          <div class="muted">Toplam adet: <b>${rowQty}</b></div>
-        </div>
-        <button class="btn ghost" data-del="${row.sku}">Sil</button>
-      </div>`;
-    }
-    orderLines.innerHTML = html || `<div class="line"><div class="muted">Sepet boş. Ürün kartından seri seçip ekleyin.</div></div>`;
-    totalQtyEl.textContent = totalQty;
-    totalSeriesEl.textContent = totalSeries;
-  }
-
-  orderLines.addEventListener('click',(e)=>{
-    const btn = e.target.closest('button[data-del]'); if(!btn) return;
-    CART.delete(btn.dataset.del);
-    renderOrder();
-  });
-
-  btnWhatsApp.addEventListener('click',()=>{
-    if(CART.size===0){ alert("Sepet boş."); return; }
-    const lines = [];
-    for(const row of CART.values()){
-      const perSizeText = row.sizes.map(s=>`${s}:${row.seriesCount}`).join(', ');
-      lines.push(`- ${row.sku} (${row.color}, Drop ${row.drop}) => SERI x${row.seriesCount} [${row.sizes.join('/')}] | Detay: ${perSizeText}`);
-    }
-    const msg = `Wenitto Toptan Sipariş%0A%0A${lines.join('%0A')}%0A%0AToplam Seri: ${totalSeriesEl.textContent}%0AToplam Adet: ${totalQtyEl.textContent}`;
-    const base = WHATSAPP_NUMBER ? `https://wa.me/${905418955499}?text=` : `https://wa.me/?text=`;
-    window.open(base + msg, '_blank');
-  });
-
-  // ------------------ INIT ------------------
-  renderTabs();
-  renderGrid();
-
-  // hızlı: toptancı kaydı butonu
-  document.getElementById('btnNewBuyer').addEventListener('click',()=>{
-    const mail = `mailto:sales@wenitto.com?subject=Wenitto%20Wholesale%20Access&body=Merhaba%20Wenitto,%0A%0ASirket%20adi:%0AVergi%20no:%0AÜlke:%0AEmail:%0ATelefon:%0A%0ATalep:%20Toptan%20erişim%20ricası.`;
-    window.location.href = mail;
-  });
-  </script>
+/* =================== INIT =================== */
+renderTabs();
+renderGrid();
+document.getElementById('btnNewBuyer').addEventListener('click',()=>{
+  const mail = `mailto:sales@wenitto.com?subject=Wenitto%20Wholesale%20Access&body=Merhaba%20Wenitto,%0A%0ASirket%20adi:%0AVergi%20no:%0AÜlke:%0AEmail:%0ATelefon:%0A%0ATalep:%20B2B%20erişim%20ricası.`;
+  window.location.href = mail;
+});
+</script>
 </body>
 </html>
