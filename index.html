@@ -6,50 +6,64 @@
   <title>Wenitto Toptan Sipariş</title>
   <style>
     :root{
-      --bg:#f7fafc;
-      --panel:#ffffff;
-      --border:#e5e7eb;
-      --muted:#64748b;
-      --text:#0f172a;
-      --brand:#0ea5e9;
-      --brand-2:#22d3ee;
-      --shadow:0 10px 30px rgba(2,8,23,.06);
+      --bg:#f7fafc; --panel:#ffffff; --border:#e5e7eb; --muted:#64748b; --text:#0f172a;
+      --brand:#0ea5e9; --brand-2:#22d3ee; --shadow:0 10px 30px rgba(2,8,23,.06);
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
     img{display:block;max-width:100%}
+
+    /* Header */
     header{position:sticky;top:0;z-index:20;background:#ffffffd9;backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border)}
     .wrap{max-width:1100px;margin:0 auto;padding:14px 16px}
     .flex{display:flex;align-items:center;gap:14px}
     .grow{flex:1}
     .logo img{height:40px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+
+    /* Tabs */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+    .tab{background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer}
+    .tab.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-color:transparent}
+
+    /* Cards */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
-    .thumb{aspect-ratio:3/4;background:#eef6ff;display:grid;place-items:center}
+    .thumb{height:350px;background:#eef6ff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .thumb img{height:100%;object-fit:cover}
     .pad{padding:12px}
     .title{font-weight:700}
     .muted{color:var(--muted)}
     .btn{border:0;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
-    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:white}
-    .btn.ghost{background:#ffffff;color:#0f172a;border:1px solid var(--border)}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff}
+    .btn.ghost{background:#fff;color:#0f172a;border:1px solid var(--border)}
     .btn.block{width:100%}
 
-    /* SEKME (tabs) */
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
-    .tab{
-      background:#ffffff;border:1px solid var(--border);border-radius:999px;
-      padding:8px 14px;font-weight:700;cursor:pointer
-    }
-    .tab.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:white;border-color:transparent}
+    /* Drawer (Sipariş Özeti) */
+    .drawer{position:fixed;right:16px;bottom:16px;width:min(460px,92vw);background:var(--panel);
+      border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+    .drawer header{display:flex;gap:12px;align-items:center; padding:12px;border-bottom:1px solid var(--border)}
+    .line{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px dashed var(--border);padding:10px 12px}
+
+    /* Modal */
+    dialog{border:1px solid var(--border);border-radius:16px;padding:0;background:var(--panel);color:var(--text);
+      max-width:min(900px,96vw);box-shadow:var(--shadow)}
+    dialog::backdrop{background:rgba(2,8,23,.35)}
+    .modal-head{display:flex;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--border)}
+    .modal-body{display:grid;grid-template-columns:1.1fr 1fr}
+    .modal-body .left{max-height:72vh}
+    .modal-body img{width:100%;height:100%;object-fit:cover}
+    .kv{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:14px;color:var(--muted);padding:12px}
+    .series{margin:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#f8fafc}
+    .series-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+    .pill{padding:10px;border:1px solid var(--border);border-radius:12px;text-align:center;background:#fff;color:#0f172a}
+    @media (max-width:800px){ .modal-body{grid-template-columns:1fr} }
   </style>
 </head>
 <body>
   <!-- Header -->
   <header>
     <div class="wrap flex">
-      <div class="logo">
-        <img src="wenitto-logo.png" alt="Wenitto">
-      </div>
+      <div class="logo"><img src="wenitto-logo.png" alt="Wenitto"></div>
       <div class="grow"></div>
       <button id="btnOpenOrder" class="btn ghost">Sipariş Özeti</button>
       <button id="btnNewBuyer" class="btn primary">Toptancı Kaydı</button>
@@ -58,55 +72,251 @@
 
   <!-- Main -->
   <main class="wrap" style="padding:20px 16px 120px">
-    <!-- Şimdilik tek sekme -->
-    <nav id="tabs" class="tabs">
-      <button class="tab active" data-cat="Takım Elbise">Takım Elbise</button>
-    </nav>
-
+    <nav id="tabs" class="tabs"></nav>
     <div id="grid" class="grid"></div>
   </main>
 
-  <script>
-  // --- ÜRÜNLER (şimdilik sadece Takım Elbise kategorisi) ---
- const PRODUCTS = [
-  { cat:"Takım Elbise", sku:"WN-SUIT-CLASSIC-001", name:"Spor Takım – Yeşil",    sizes:[46,48,50,52,54,56], img:"./takim1.jpg?v=1" },
-  { cat:"Takım Elbise", sku:"WN-SUIT-MODERN-100",  name:"Spor Takım – Mavi", sizes:[46,48,50,52,54,56], img:"./takim2.jpg?v=1" },
-  { cat:"Takım Elbise", sku:"WN-SUIT-GREY-200",    name:"Spor Takım – Lacivert",   sizes:[46,48,50,52,54,56], img:"./takim3.jpg?v=1" }
-];
+  <!-- Sipariş Özeti Drawer -->
+  <section id="drawer" class="drawer" hidden>
+    <header>
+      <div style="font-weight:800">Sipariş Özeti</div>
+      <div class="grow"></div>
+      <button id="btnCloseOrder" class="btn ghost">Kapat</button>
+    </header>
+    <div id="orderLines"></div>
+    <div class="line"><div class="muted">Toplam Seri</div><div id="totalSeries" style="font-weight:800">0</div></div>
+    <div class="line"><div class="muted">Toplam Adet</div><div id="totalQty" style="font-weight:800">0</div></div>
+    <div class="line" style="gap:12px">
+      <button id="btnClear" class="btn ghost">Temizle</button>
+      <button id="btnWhatsApp" class="btn primary" style="flex:1">WhatsApp Sipariş</button>
+    </div>
+  </section>
 
-  const grid = document.getElementById('grid');
-
- function cardHTML(p){
-  return `
-    <article class="card">
-      <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
-      <div class="pad">
-        <div class="title">${p.name}</div>
-        <div class="muted">${p.sku}</div>
-        <button class="btn block primary" data-sku="${p.sku}">İncele</button>
+  <!-- Ürün Modal -->
+  <dialog id="modal">
+    <div class="modal-head">
+      <div id="mTitle" style="font-weight:800"></div>
+      <div class="grow"></div>
+      <button id="mClose" class="btn ghost">Kapat</button>
+    </div>
+    <div class="modal-body">
+      <div class="left"><img id="mImg" alt=""></div>
+      <div class="right">
+        <div class="kv">
+          <div>Ürün Kodu</div><div id="mSku" class="muted"></div>
+          <div>Kumaş</div><div id="mFabric" class="muted"></div>
+          <div>Renk</div><div id="mColor" class="muted"></div>
+          <div>Drop</div><div id="mDrop" class="muted"></div>
+        </div>
+        <div class="series">
+          <div>Seri seti: <b id="seriesSetText"></b></div>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:10px">
+            <label><b>Kaç Seri?</b></label>
+            <input id="seriesCount" type="number" min="1" value="1" style="width:90px;padding:8px;border:1px solid var(--border);border-radius:10px">
+          </div>
+          <div class="series-grid" id="seriesGrid"></div>
+          <small class="muted">⚠️ Bu üründe <b>tam seri zorunludur</b>. 1 seri = listelenen her bedenden 1 adet.</small>
+        </div>
+        <div style="padding:12px">
+          <button id="mAdd" class="btn primary" style="width:100%">Seriyi Sepete Ekle</button>
+        </div>
       </div>
-    </article>`;
-}
+    </div>
+  </dialog>
 
-  function renderGrid(category){
-  const list = PRODUCTS.filter(p => p.cat === category);
-  grid.innerHTML = list.map(cardHTML).join('');
-}
+  <script>
+  // ------------------ AYARLAR ------------------
+  const WHATSAPP_NUMBER = ""; // örn "90XXXXXXXXXX"
+  const REQUIRE_FULL_SERIES = true;
 
-let CART = [];
+  // ------------------ KATEGORİLER ------------------
+  const CATEGORIES = ["Takım Elbise","Tek Ceket","Damatlık","Kaban","Ayakkabı","Gömlek","Pantolon"];
+  let currentCat = CATEGORIES[0];
 
-grid.addEventListener("click", (e)=>{
-  if(e.target.classList.contains("btn")){
-    const sku = e.target.dataset.sku;
-    const product = PRODUCTS.find(p => p.sku === sku);
-    if(product){
-      alert(`Ürün: ${product.name}\nBedenler: ${product.sizes.join(", ")}\nSeri almak zorunlu!`);
-    }
+  // ------------------ ÜRÜNLER ------------------
+  // Not: Takım Elbise görselleri senin repo kökünde: takim1.jpg, takim2.jpg, takim3.jpg
+  const PRODUCTS = [
+    // Takım Elbise
+    { cat:"Takım Elbise", sku:"WN-SUIT-CLASSIC-001", name:"Spor Takım – Yeşil",    color:"Yeşil", drop:"6", fabric:"76% Viscose, 21% Poly, 3% Lycra", sizes:[46,48,50,52,54,56], img:"./takim1.jpg" },
+    { cat:"Takım Elbise", sku:"WN-SUIT-MODERN-100",  name:"Spor Takım – Mavi",     color:"Mavi",  drop:"6", fabric:"76% Viscose, 21% Poly, 3% Lycra", sizes:[46,48,50,52,54,56], img:"./takim2.jpg" },
+    { cat:"Takım Elbise", sku:"WN-SUIT-GREY-200",    name:"Spor Takım – Lacivert", color:"Lacivert", drop:"6", fabric:"76% Viscose, 21% Poly, 3% Lycra", sizes:[46,48,50,52,54,56], img:"./takim3.jpg" },
+
+    // Tek Ceket
+    { cat:"Tek Ceket", sku:"WN-JKT-TWILL-055", name:"Twill Ceket – Siyah", color:"Siyah", drop:"-", fabric:"Koton Twill", sizes:[46,48,50,52,54], img:"https://images.unsplash.com/photo-1520975954732-35dd222996f2?q=80&w=1200&auto=format&fit=crop" },
+    { cat:"Tek Ceket", sku:"WN-JKT-LINEN-120", name:"Linen Ceket – Bej",   color:"Bej",   drop:"-", fabric:"%100 Keten", sizes:[46,48,50,52,54], img:"https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1200&auto=format&fit=crop" },
+
+    // Damatlık
+    { cat:"Damatlık", sku:"WN-TUX-PEAK-010", name:"Tuxedo – Peak Lapel", color:"Siyah", drop:"-", fabric:"Yün Karışım", sizes:[46,48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" },
+
+    // Kaban
+    { cat:"Kaban", sku:"WN-COAT-WOOL-210", name:"Wool Coat – Camel", color:"Camel", drop:"-", fabric:"%60 Yün, %40 Viskon", sizes:[48,50,52,54,56], img:"https://images.unsplash.com/photo-1519741347686-c1e0d8be53ae?q=80&w=1200&auto=format&fit=crop" },
+
+    // Ayakkabı
+    { cat:"Ayakkabı", sku:"WN-SHOE-DERBY-001", name:"Derby – Siyah", color:"Siyah", drop:"-", fabric:"Deri", sizes:[40,41,42,43,44,45], img:"https://images.unsplash.com/photo-1543322748-33df6d3db806?q=80&w=1200&auto=format&fit=crop" },
+
+    // Gömlek
+    { cat:"Gömlek", sku:"WN-SHIRT-OXF-100", name:"Oxford Gömlek – Beyaz", color:"Beyaz", drop:"-", fabric:"%100 Pamuk", sizes:["S","M","L","XL","XXL"], img:"https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=1200&auto=format&fit=crop" },
+
+    // Pantolon
+    { cat:"Pantolon", sku:"WN-PANT-CHINO-200", name:"Chino – Bej", color:"Bej", drop:"-", fabric:"Pamuk Elastan", sizes:[30,31,32,33,34,36], img:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200&auto=format&fit=crop" },
+  ];
+
+  // ------------------ RENDER: Tabs ------------------
+  const TABS = document.getElementById('tabs');
+  function renderTabs(){
+    TABS.innerHTML = CATEGORIES.map(c => `<button class="tab ${c===currentCat?'active':''}" data-cat="${c}">${c}</button>`).join('');
   }
-});
+  TABS.addEventListener('click',(e)=>{
+    const btn = e.target.closest('.tab'); if(!btn) return;
+    currentCat = btn.dataset.cat;
+    renderTabs();
+    renderGrid();
+  });
 
-  // İlk yüklemede Takım Elbise göster
-  renderGrid("Takım Elbise");
+  // ------------------ RENDER: Grid ------------------
+  const grid = document.getElementById('grid');
+  function cardHTML(p){
+    return `
+      <article class="card">
+        <div class="thumb"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
+        <div class="pad">
+          <div class="title">${p.name}</div>
+          <div class="muted">${p.sku}</div>
+          <button class="btn block primary" data-sku="${p.sku}">İncele</button>
+        </div>
+      </article>`;
+  }
+  function renderGrid(){
+    const list = PRODUCTS.filter(p => p.cat === currentCat);
+    grid.innerHTML = list.length ? list.map(cardHTML).join('') :
+      `<div class="muted">Bu kategoride ürün yok.</div>`;
+  }
+
+  // ------------------ MODAL ------------------
+  const modal = document.getElementById('modal');
+  const mTitle = document.getElementById('mTitle');
+  const mSku   = document.getElementById('mSku');
+  const mImg   = document.getElementById('mImg');
+  const mColor = document.getElementById('mColor');
+  const mDrop  = document.getElementById('mDrop');
+  const mFabric= document.getElementById('mFabric');
+  const seriesSetText = document.getElementById('seriesSetText');
+  const seriesGrid = document.getElementById('seriesGrid');
+  const seriesCountInput = document.getElementById('seriesCount');
+  const mAdd = document.getElementById('mAdd');
+  const mClose = document.getElementById('mClose');
+  let currentProduct = null;
+
+  grid.addEventListener('click',(e)=>{
+    const btn = e.target.closest('button[data-sku]'); if(!btn) return;
+    const sku = btn.dataset.sku;
+    const p = PRODUCTS.find(x=>x.sku===sku);
+    openModal(p);
+  });
+
+  function openModal(p){
+    currentProduct = p;
+    mTitle.textContent = p.name;
+    mSku.textContent = p.sku;
+    mImg.src = p.img;
+    mColor.textContent = p.color || "-";
+    mDrop.textContent = p.drop || "-";
+    mFabric.textContent = p.fabric || "-";
+    seriesCountInput.value = 1;
+    renderSeriesGrid(p.sizes, 1);
+    seriesSetText.textContent = p.sizes.join(' - ');
+    modal.showModal();
+  }
+  mClose.addEventListener('click',()=>modal.close());
+
+  function renderSeriesGrid(seriesSet, count){
+    seriesGrid.innerHTML = seriesSet.map(s=>`<div class="pill">EU ${s}<br><small class="muted">adet: <b>${count}</b></small></div>`).join('');
+  }
+  seriesCountInput.addEventListener('input',()=>{
+    const n = Math.max(1, parseInt(seriesCountInput.value||'1',10));
+    seriesCountInput.value = n;
+    if(currentProduct) renderSeriesGrid(currentProduct.sizes, n);
+  });
+
+  // ------------------ CART / DRAWER ------------------
+  const drawer = document.getElementById('drawer');
+  const btnOpenOrder = document.getElementById('btnOpenOrder');
+  const btnCloseOrder = document.getElementById('btnCloseOrder');
+  const btnClear = document.getElementById('btnClear');
+  const btnWhatsApp = document.getElementById('btnWhatsApp');
+  const orderLines = document.getElementById('orderLines');
+  const totalQtyEl = document.getElementById('totalQty');
+  const totalSeriesEl = document.getElementById('totalSeries');
+
+  const CART = new Map(); // key = sku
+
+  btnOpenOrder.addEventListener('click',()=>drawer.hidden=false);
+  btnCloseOrder.addEventListener('click',()=>drawer.hidden=true);
+  btnClear.addEventListener('click',()=>{ CART.clear(); renderOrder(); });
+
+  mAdd.addEventListener('click',()=>{
+    if(!currentProduct) return;
+    const count = Math.max(1, parseInt(seriesCountInput.value||'1',10));
+    const perSize = Object.fromEntries(currentProduct.sizes.map(s=>[s,count]));
+    CART.set(currentProduct.sku, {
+      sku: currentProduct.sku, name: currentProduct.name, color: currentProduct.color||"-", drop: currentProduct.drop||"-",
+      seriesCount: count, sizes: currentProduct.sizes, perSize
+    });
+    renderOrder();
+    modal.close();
+    drawer.hidden = false;
+  });
+
+  function renderOrder(){
+    let html = '';
+    let totalQty = 0;
+    let totalSeries = 0;
+    for(const row of CART.values()){
+      const rowQty = row.seriesCount * row.sizes.length;
+      totalQty += rowQty;
+      totalSeries += row.seriesCount;
+      html += `<div class="line">
+        <div>
+          <div style="font-weight:700">${row.name}</div>
+          <div class="muted">${row.sku} · ${row.color} · Drop ${row.drop}</div>
+          <div class="muted" style="margin-top:4px">Seri (${row.sizes.join(' / ')}): <b>${row.seriesCount}</b></div>
+          <div class="muted">Toplam adet: <b>${rowQty}</b></div>
+        </div>
+        <button class="btn ghost" data-del="${row.sku}">Sil</button>
+      </div>`;
+    }
+    orderLines.innerHTML = html || `<div class="line"><div class="muted">Sepet boş. Ürün kartından seri seçip ekleyin.</div></div>`;
+    totalQtyEl.textContent = totalQty;
+    totalSeriesEl.textContent = totalSeries;
+  }
+
+  orderLines.addEventListener('click',(e)=>{
+    const btn = e.target.closest('button[data-del]'); if(!btn) return;
+    CART.delete(btn.dataset.del);
+    renderOrder();
+  });
+
+  btnWhatsApp.addEventListener('click',()=>{
+    if(CART.size===0){ alert("Sepet boş."); return; }
+    const lines = [];
+    for(const row of CART.values()){
+      const perSizeText = row.sizes.map(s=>`${s}:${row.seriesCount}`).join(', ');
+      lines.push(`- ${row.sku} (${row.color}, Drop ${row.drop}) => SERI x${row.seriesCount} [${row.sizes.join('/')}] | Detay: ${perSizeText}`);
+    }
+    const msg = `Wenitto Toptan Sipariş%0A%0A${lines.join('%0A')}%0A%0AToplam Seri: ${totalSeriesEl.textContent}%0AToplam Adet: ${totalQtyEl.textContent}`;
+    const base = WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}?text=` : `https://wa.me/?text=`;
+    window.open(base + msg, '_blank');
+  });
+
+  // ------------------ INIT ------------------
+  renderTabs();
+  renderGrid();
+
+  // hızlı: toptancı kaydı butonu
+  document.getElementById('btnNewBuyer').addEventListener('click',()=>{
+    const mail = `mailto:sales@wenitto.com?subject=Wenitto%20Wholesale%20Access&body=Merhaba%20Wenitto,%0A%0ASirket%20adi:%0AVergi%20no:%0AÜlke:%0AEmail:%0ATelefon:%0A%0ATalep:%20Toptan%20erişim%20ricası.`;
+    window.location.href = mail;
+  });
   </script>
 </body>
 </html>
