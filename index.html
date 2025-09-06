@@ -114,13 +114,13 @@ dialog::backdrop{background:rgba(2,8,23,.35)}
 <script>
 /* ================== AYARLAR ================== */
 const WHATSAPP_NUMBER = "905418955499";
-const SIZE_SET = ["2XL","3XL","L","M","XL"]; // gösterim sırası
+const SIZE_SET = ["3XL","2XL","L","M","XL","S"]; // gösterim sırası
 const CATEGORIES = ["Takım Elbise","Deri Ceket","Tek Ceket","Kaban","Damatlık","Ayakkabı","Gömlek","Pantolon"];
 let currentCat = "Deri Ceket";
 
 /* ============== VERİ YAPISI (MODEL + VARYANT + STOK) ==============
    Deri Ceket kategorisinde model bazlı (tek kart) + renk varyantlı yapı.
-   stockMap: { "2XL": 7, "3XL": 7, "L": 7, "M": 7, "XL": 7 }
+   stockMap: { "3XL": 7, "2XL": 7, "L": 7, "M": 7, "XL": 7, "S":0  }
    Toplam SERİ = stockMap içindeki minimum değer (tam seri için her bedenden 1 gereklidir)
 */
 
@@ -134,9 +134,9 @@ const MODELS = [
     sizes:[...SIZE_SET],
     variants:[
       { color:"Kahve",  sku:"WN04RF007-KAH",  img:"https://via.placeholder.com/600x750?text=WN04SF053-KAH",
-        stockMap:{ "2XL":7, "3XL":7, "L":7, "M":7, "XL":7 } },
+        stockMap:{ "3XL":7, "2XL":7, "L":7, "M":7, "XL":7, "S":0 } },
       { color:"Siyah",  sku:"WN04RF007-SIY",  img:"https://via.placeholder.com/600x750?text=WN04SF053-SIY",
-        stockMap:{ "2XL":7, "3XL":7, "L":7, "M":7, "XL":7 } },
+        stockMap:{ "3XL":7, "2XL":7, "L":7, "M":7, "XL":7, "S":0 } },
     ]
   },
 
@@ -148,11 +148,11 @@ const MODELS = [
     sizes:[...SIZE_SET],
     variants:[
       { color:"Siyah",  sku:"WN04RF004-SIY", img:"https://via.placeholder.com/600x750?text=WN05LX110-SIY",
-        stockMap:{ "2XL":3, "3XL":3, "L":3, "M":3, "XL":3 } },
+        stockMap:{ "3XL":3, "2XL":3, "L":3, "M":3, "XL":3, "S":0 } },
       { color:"Kahve",  sku:"WN04RF004-KAH", img:"https://via.placeholder.com/600x750?text=WN05LX110-KAH",
-        stockMap:{ "2XL":2, "3XL":2, "L":2, "M":2, "XL":2 } },
+        stockMap:{ "3XL":2, "2XL":2, "L":2, "M":2, "XL":2, "S":0 } },
       { color:"Taba",  sku:"WN04RF004-TAB", img:"https://via.placeholder.com/600x750?text=WN05LX110-KAH",
-        stockMap:{ "2XL":3, "3XL":3, "L":3, "M":3, "XL":3 } },
+        stockMap:{ "3XL":3, "2XL":3, "L":3, "M":3, "XL":3, "S":0 } },
     ]
   },
 
@@ -164,15 +164,28 @@ const MODELS = [
     sizes:[...SIZE_SET],
     variants:[
       { color:"Kahve",  sku:"WN04KL003-KAH",  img:"https://via.placeholder.com/600x750?text=WN04SF053-KAH",
-        stockMap:{ "2XL":5, "3XL":5, "L":5, "M":5, "XL":5 } },
+        stockMap:{ "3XL":5, "2XL":5, "L":5, "M":5, "XL":5, "S":0 } },
       { color:"Siyah",  sku:"WN04KL003-SIY",  img:"https://via.placeholder.com/600x750?text=WN04SF053-SIY",
-        stockMap:{ "2XL":7, "3XL":7, "L":7, "M":7, "XL":7 } },
+        stockMap:{ "3XL":7, "2XL":7, "L":7, "M":7, "XL":7, "S":0 } },
        { color:"Taba",  sku:"WN04KL003-TAB",  img:"https://via.placeholder.com/600x750?text=WN04SF053-SIY",
-        stockMap:{ "2XL":4, "3XL":4, "L":4, "M":3, "XL":4 } },
+        stockMap:{ "3XL":4, "2XL":4, "L":4, "M":3, "XL":4, "S":0 } },
     ]
   },
 
+{
+    cat:"Deri Ceket",
+    model:"WN04KL001",
+    name:"DERİ MONT - BLEZER",
+    sizes:[...SIZE_SET],
+    variants:[
+      { color:"Kahve",  sku:"WN04KL001-KAH",  img:"https://via.placeholder.com/600x750?text=WN04SF053-KAH",
+        stockMap:{ "3XL":6, "2XL":10, "L":15, "M":10, "XL":15, "S":10 } },
+      { color:"Siyah",  sku:"WN04KL001-SIY",  img:"https://via.placeholder.com/600x750?text=WN04SF053-SIY",
+        stockMap:{ "3XL":9, "2XL":13, "L":17, "M":13, "XL":18, "S":13 } },
+    ]
+  },
 
+      
   /* Diğer kategorilerde de örnek model istersek buraya ekleyebiliriz */
 ];
 
