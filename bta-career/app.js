@@ -630,7 +630,7 @@
   }
 
   function academyPage(m){
-    return '<div class="section-title"><div><h2>Altyapı Akademisi</h2><p>16 yaşında çıkardığın çocuğu 88 OVR'a taşıdıysan unutulmasın.</p></div><button class="btn primary" id="addAcademy">+ Akademi Oyuncusu</button></div>'+
+    return '<div class="section-title"><div><h2>Altyapı Akademisi</h2><p>16 yaşında çıkardığın çocuğu 88 OVR seviyesine taşıdıysan unutulmasın.</p></div><button class="btn primary" id="addAcademy">+ Akademi Oyuncusu</button></div>'+
       (m.academy.length?'<div class="record-list">'+m.academy.map(x=>'<div class="record-card"><div class="record-title">'+esc(x.player)+' · '+esc(x.position)+'</div><div class="record-holder">'+esc(x.age)+' yaş · '+esc(x.startOvr)+' OVR başlangıç</div><div class="record-desc">'+esc(x.startSeason)+' · Son OVR '+esc(x.endOvr||"—")+' · Satış '+fmtMoney(x.saleFee,"M€")+'</div><div class="record-foot"><span class="badge '+(num(x.endOvr)-num(x.startOvr)>=15?"green":"")+'">+'+(num(x.endOvr)-num(x.startOvr))+' gelişim</span><button class="btn danger sm" data-del-academy="'+x.id+'">Sil</button></div></div>').join("")+'</div>':'<div class="empty"><div class="big">🌱</div>Akademiden çıkan ilk oyuncunu ekle.</div>');
   }
   function academyModal(){
