@@ -521,10 +521,10 @@
   function playerLegacy(p,t){
     const score=clamp(Math.round(t.goals*.08+t.assists*.06+t.trophies*4+t.awards*6+p.completedRecords.length*3+Math.max(0,p.currentOvr-65)*1.2),0,100);
     const title=score>=90?"Futbol Tarihinin Efsanesi":score>=75?"Dünya Yıldızı":score>=55?"Kulüp Efsanesi":score>=35?"Kariyer Oyuncusu":"Yükselen İsim";
-    return '<div class="legacy-hero"><div class="eyebrow">KARİYER MİRASI — CANLI ÖNİZLEME</div><div class="legacy-score">'+score+'</div><div class="legacy-title">'+title+'</div><p>Bu sayfa kariyerin boyunca otomatik büyür. Emekli olduğunda aynı özet Efsaneler Arşivi'ne kilitlenir.</p></div>'+
+    return '<div class="legacy-hero"><div class="eyebrow">KARİYER MİRASI — CANLI ÖNİZLEME</div><div class="legacy-score">'+score+'</div><div class="legacy-title">'+title+'</div><p>Bu sayfa kariyerin boyunca otomatik büyür. Emekli olduğunda aynı özet Efsaneler Arşivine kilitlenir.</p></div>'+
       '<div class="quick-grid section">'+stat("Toplam Gol",t.goals)+stat("Toplam Asist",t.assists)+stat("Kupalar",t.trophies)+stat("Rekorlar",p.completedRecords.length)+'</div>'+
       '<div class="two-col section"><div class="panel"><h3>Kulüp Yolculuğu</h3>'+timelinePlayer(p)+'</div><div class="panel"><h3>Final Durumu</h3>'+socialBars(p.social)+'</div></div>'+
-      '<div class="section danger-zone"><h3>Kariyeri Bitir</h3><p>Emekli olursan bu kariyer salt okunur şekilde Efsaneler Arşivi'ne taşınır ve yeni oyuncu kariyeri açabilirsin.</p><button class="btn danger" id="retirePlayer">Oyuncu Kariyerinden Emekli Ol</button></div>';
+      '<div class="section danger-zone"><h3>Kariyeri Bitir</h3><p>Emekli olursan bu kariyer salt okunur şekilde Efsaneler Arşivine taşınır ve yeni oyuncu kariyeri açabilirsin.</p><button class="btn danger" id="retirePlayer">Oyuncu Kariyerinden Emekli Ol</button></div>';
   }
   function timelinePlayer(p){
     const rows=[{t:p.profile.startSeason,a:"Başlangıç",b:clubName(p.transfers[0]?.fromClubId||p.currentClubId)}];
@@ -683,7 +683,7 @@
     return '<div class="legacy-hero"><div class="eyebrow">TEKNİK DİREKTÖR KARİYER MİRASI</div><div class="legacy-score">'+score+'</div><div class="legacy-title">'+esc(s.title)+'</div><p>'+m.stints.length+' kulüp dönemi · '+t.trophies+' kupa · '+t.wins+' galibiyet · '+fmtMoney(t.net,"M€")+' net transfer sonucu.</p></div>'+
       '<div class="quick-grid section">'+stat("Kariyer Puanı",s.points)+stat("Menajer OVR",s.ovr)+stat("İtibar",s.reputation)+stat("Kırılan Rekor",m.completedRecords.length)+'</div>'+
       '<div class="two-col section"><div class="panel"><h3>Kulüp Yolculuğu</h3><div class="list">'+m.stints.map(x=>'<div class="list-row"><span class="badge gold">'+esc(x.startSeason)+'</span><div class="list-main"><div class="list-title">'+esc(clubName(x.clubId))+'</div><div class="list-sub">'+esc(x.endSeason||"Devam ediyor")+'</div></div></div>').join("")+'</div></div><div class="panel"><h3>Özellikler</h3>'+attrBars(s.attrs)+'</div></div>'+
-      '<div class="section danger-zone"><h3>Kariyeri Bitir</h3><p>Emekli olduğunda bu kariyer Efsaneler Arşivi'ne sabitlenir ve yeni teknik direktör kariyeri açabilirsin.</p><button class="btn danger" id="retireManager">Teknik Direktörlükten Emekli Ol</button></div>';
+      '<div class="section danger-zone"><h3>Kariyeri Bitir</h3><p>Emekli olduğunda bu kariyer Efsaneler Arşivine sabitlenir ve yeni teknik direktör kariyeri açabilirsin.</p><button class="btn danger" id="retireManager">Teknik Direktörlükten Emekli Ol</button></div>';
   }
 
   function archivePage(){
